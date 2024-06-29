@@ -1,0 +1,94 @@
+package com.kivi.huidada.model.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import java.io.Serializable;
+import java.util.Date;
+import lombok.Data;
+
+/**
+ * 应用
+ * @TableName app
+ */
+@TableName(value ="app")
+@Data
+public class App implements Serializable {
+    /**
+     * id
+     */
+    @TableId(type = IdType.ASSIGN_ID) // 使用雪花算法生成id，防止id过于简单防爬虫
+    private Long id;
+
+    /**
+     * 应用名
+     */
+    private String appName;
+
+    /**
+     * 应用描述
+     */
+    private String appDesc;
+
+    /**
+     * 应用图标
+     */
+    private String appIcon;
+
+    /**
+     * 应用类型（0-得分类，1-测评类）
+     */
+    private Integer appType;
+
+    /**
+     * 评分策略（0-自定义，1-AI）
+     */
+    private Integer scoringStrategy;
+
+    /**
+     * 审核状态：0-待审核, 1-通过, 2-拒绝
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
+    /**
+     * 审核人 id
+     */
+    private Long reviewerId;
+
+    /**
+     * 审核时间
+     */
+    private Date reviewTime;
+
+    /**
+     * 创建用户 id
+     */
+    private Long userId;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
+    /**
+     * 是否删除, 逻辑删除，0-未删除，1-已删除
+     */
+    @TableLogic
+    private Integer isDelete;
+
+    /**
+     * serialVersionUID：序列化版本UID，用于反序列化时验证一致性
+     * @TableField(exist = false): 该字段在数据库中不存在，不生成数据库字段
+     */
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+}
