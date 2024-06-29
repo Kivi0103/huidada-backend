@@ -1,13 +1,53 @@
 package com.kivi.huidada.service;
 
-import generator.domain.UserAnswer;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kivi.huidada.model.dto.userAnswer.UserAnswerQueryRequest;
+import com.kivi.huidada.model.entity.UserAnswer;
+import com.kivi.huidada.model.vo.UserAnswerVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author Kivi
-* @description 针对表【user_answer(用户答题记录)】的数据库操作Service
-* @createDate 2024-06-28 22:05:48
-*/
+ * 用户答案服务
+ *
+ * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+ * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ */
 public interface UserAnswerService extends IService<UserAnswer> {
 
+    /**
+     * 校验数据
+     *
+     * @param userAnswer
+     * @param add 对创建的数据进行校验
+     */
+    void validUserAnswer(UserAnswer userAnswer, boolean add);
+
+    /**
+     * 获取查询条件
+     *
+     * @param userAnswerQueryRequest
+     * @return
+     */
+    QueryWrapper<UserAnswer> getQueryWrapper(UserAnswerQueryRequest userAnswerQueryRequest);
+    
+    /**
+     * 获取用户答案封装
+     *
+     * @param userAnswer
+     * @param request
+     * @return
+     */
+    UserAnswerVO getUserAnswerVO(UserAnswer userAnswer, HttpServletRequest request);
+
+    /**
+     * 分页获取用户答案封装
+     *
+     * @param userAnswerPage
+     * @param request
+     * @return
+     */
+    Page<UserAnswerVO> getUserAnswerVOPage(Page<UserAnswer> userAnswerPage, HttpServletRequest request);
 }
