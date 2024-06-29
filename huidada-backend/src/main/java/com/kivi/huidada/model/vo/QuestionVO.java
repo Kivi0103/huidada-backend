@@ -1,6 +1,9 @@
 package com.kivi.huidada.model.vo;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.kivi.huidada.model.dto.question.QuestionContentDTO;
 import com.kivi.huidada.model.entity.Question;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -12,8 +15,8 @@ import java.util.List;
 /**
  * 题目视图
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ * 
+ 
  */
 @Data
 public class QuestionVO implements Serializable {
@@ -24,14 +27,14 @@ public class QuestionVO implements Serializable {
     private Long id;
 
     /**
-     * 标题
+     * 题目内容（json格式）
      */
-    private String title;
+    private QuestionContentDTO questionContent;
 
     /**
-     * 内容
+     * 应用 id
      */
-    private String content;
+    private Long appId;
 
     /**
      * 创建用户 id
@@ -49,17 +52,12 @@ public class QuestionVO implements Serializable {
     private Date updateTime;
 
     /**
-     * 标签列表
-     */
-    private List<String> tagList;
-
-    /**
      * 创建用户信息
      */
-    private UserVO user;
+    private UserVO userVO;
 
     /**
-     * 封装类转对象
+     * 封装类转实体对象
      *
      * @param questionVO
      * @return
@@ -70,8 +68,8 @@ public class QuestionVO implements Serializable {
         }
         Question question = new Question();
         BeanUtils.copyProperties(questionVO, question);
-        List<String> tagList = questionVO.getTagList();
-        question.setTags(JSONUtil.toJsonStr(tagList));
+        // 将实体类中的String类型转换为QuestionContentDTO类型
+        question.setQuestionContent(JSONUtil.toJsonStr(questionVO.getQuestionContent()));
         return question;
     }
 
@@ -87,7 +85,8 @@ public class QuestionVO implements Serializable {
         }
         QuestionVO questionVO = new QuestionVO();
         BeanUtils.copyProperties(question, questionVO);
-        questionVO.setTagList(JSONUtil.toList(question.getTags(), String.class));
+        // 将QuestionContentDTO类型转换为String类型
+        questionVO.setQuestionContent(JSONUtil.toBean(question.getQuestionContent(), QuestionContentDTO.class));
         return questionVO;
     }
 }
