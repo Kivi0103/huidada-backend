@@ -14,6 +14,11 @@ import java.util.List;
 @Data
 public class UserAnswerEditRequest implements Serializable {
     /**
+     * id
+     */
+    private Long id;
+
+    /**
      * 应用 id
      */
     private Long appId;

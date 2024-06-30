@@ -54,7 +54,7 @@ public class QuestionVO implements Serializable {
     /**
      * 创建用户信息
      */
-    private UserVO userVO;
+    private UserVO user;
 
     /**
      * 封装类转实体对象

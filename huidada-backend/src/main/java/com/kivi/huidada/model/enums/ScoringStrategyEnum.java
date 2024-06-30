@@ -1,8 +1,14 @@
 package com.kivi.huidada.model.enums;
 
+import cn.hutool.core.util.ObjectUtil;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum ScoringStrategyEnum {
-    CUSTOM("自定义",0),
-    AI("AI",1);
+    CUSTOM("自定义", 0),
+    AI("AI", 1);
     private final String text;
     private final int value;
 
@@ -12,11 +18,39 @@ public enum ScoringStrategyEnum {
         this.value = value;
     }
 
-    public String gettext() {
-        return text;
+
+    /**
+     * 根据 value 获取枚举
+     *
+     * @param value
+     * @return
+     */
+    public static ScoringStrategyEnum getEnumByValue(int value) {
+        if (ObjectUtil.isEmpty(value)) {
+            return null;
+        }
+        for (ScoringStrategyEnum item : ScoringStrategyEnum.values()) {
+            if (item.getValue() == value) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取值列表
+     *
+     * @return
+     */
+    public static List<Integer> getValues() {
+        return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
     }
 
     public int getValue() {
         return value;
+    }
+
+    public String getText() {
+        return text;
     }
 }

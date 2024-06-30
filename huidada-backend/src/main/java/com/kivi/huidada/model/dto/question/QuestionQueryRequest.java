@@ -30,6 +30,11 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
     private Long appId;
 
     /**
+     * 题目内容（json格式）
+     */
+    private String questionContent;
+
+    /**
      * 创建用户 id
      */
     private Long userId;
@@ -38,11 +43,6 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
      * id
      */
     private Long notId;
-
-    /**
-     * 搜索词
-     */
-    private String searchText;
 
 
     private static final long serialVersionUID = 1L;

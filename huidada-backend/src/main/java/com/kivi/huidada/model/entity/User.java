@@ -5,14 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.io.Serializable;
 import java.util.Date;
-
 import lombok.Data;
 
 /**
  * 用户
+ *
  */
 @TableName(value = "user")
 @Data
@@ -33,6 +32,16 @@ public class User implements Serializable {
      * 用户密码
      */
     private String userPassword;
+
+    /**
+     * 开放平台id
+     */
+    private String unionId;
+
+    /**
+     * 公众号openId
+     */
+    private String mpOpenId;
 
     /**
      * 用户昵称
