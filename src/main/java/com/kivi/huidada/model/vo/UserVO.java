@@ -21,6 +21,10 @@ public class UserVO implements Serializable {
      */
     private String userName;
 
+    /**
+     * 用户权限
+     */
+    private String role;
 
     /**
      * 用户头像，关联到cos存储地址

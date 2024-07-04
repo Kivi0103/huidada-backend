@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@Api(tags = "User")
+@Api(tags = "UserController")
 @RequestMapping("/user")
 public class UserController {
     @Resource
@@ -32,8 +32,8 @@ public class UserController {
      * 用户注册接口
      */
     @PostMapping("/register")
-    @ApiOperation("用户注册接口")
-    public BaseResponse<Boolean> register(@RequestBody UserAddRequestDTO userAddRequestDTO) {
+//    @ApiOperation("用户注册接口")
+    public BaseResponse<Boolean> userRegister(@RequestBody UserAddRequestDTO userAddRequestDTO) {
         if(userAddRequestDTO == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户参数错误");
         }
@@ -44,7 +44,7 @@ public class UserController {
         if(userName == null || password == null){
             throw  new BusinessException(ErrorCode.PARAMS_ERROR, "用户名或密码不能为空");
         }
-        Boolean is_add = userService.register(userName, password, passwordConfirm, headPicture);
+        Boolean is_add = userService.userRegister(userName, password, passwordConfirm, headPicture);
         return ResultUtils.success(true);
     }
 
@@ -55,6 +55,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
+//    @ApiOperation("用户登录接口")
+
     public BaseResponse<UserVO> userLogin(@RequestBody UserLoginRequestDTO userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -68,4 +70,16 @@ public class UserController {
         return ResultUtils.success(userVO);
     }
 
+    /**
+     * 获取当前登录用户
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/get/login")
+//    @ApiOperation("获取当前登录用户")
+    public BaseResponse<User> getLoginUser(HttpServletRequest request) {
+        User user = userService.getLoginUser(request);
+        return ResultUtils.success(user);
+    }
 }

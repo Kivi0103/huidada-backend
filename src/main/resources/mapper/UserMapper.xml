@@ -9,7 +9,7 @@
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="headPicture" column="head_picture" jdbcType="VARCHAR"/>
-            <result property="role" column="role" jdbcType="TINYINT"/>
+            <result property="role" column="role" jdbcType="VARCHAR"/>
             <result property="unionId" column="union_id" jdbcType="VARCHAR"/>
             <result property="mpOpenId" column="mp_open_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

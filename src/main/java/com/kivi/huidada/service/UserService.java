@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface UserService extends IService<User> {
 
-    Boolean register(String userName, String password, String passwordConfirm, String email);
+    Boolean userRegister(String userName, String password, String passwordConfirm, String email);
 
     UserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
     public UserVO getLoginUserVO(User user);
+
+    User getLoginUser(HttpServletRequest request);
 }

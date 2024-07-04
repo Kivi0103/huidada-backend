@@ -12,7 +12,7 @@ CREATE TABLE user
     user_name    VARCHAR(128) NOT NULL UNIQUE COMMENT '用户名',
     password     VARCHAR(256) NOT NULL COMMENT '用户密码',
     head_picture VARCHAR(1024) COMMENT '用户头像，关联到cos存储地址',
-    role         TINYINT      NOT NULL DEFAULT 0 COMMENT '用户权限、0为普通用户，1为管理员，-1为禁止人员',
+    role         VARCHAR(32)      NOT NULL DEFAULT 0 COMMENT '用户权限、user为普通用户，admin为管理员，ban为禁止人员',
     union_id     VARCHAR(256) COMMENT '微信开放平台id',
     mp_open_id   VARCHAR(256) COMMENT '公众号openId',
     create_time  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

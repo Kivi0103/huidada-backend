@@ -42,7 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public Boolean register(String userName, String password, String passwordConfirm, String headPicture) {
+    public Boolean userRegister(String userName, String password, String passwordConfirm, String headPicture) {
         // 校验用户名长度
         if(userName.length() < 4 || userName.length() > 20){
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户名长度必须在4-20位之间");
@@ -119,6 +119,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         BeanUtils.copyProperties(user, loginUserVO);
         return loginUserVO;
     }
+
+    /**
+     * 获取当前登录用户
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public User getLoginUser(HttpServletRequest request) {
+        // 先判断是否已登录
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        // 从数据库查询（追求性能的话可以注释，直接走缓存）
+        long userId = currentUser.getId();
+        currentUser = this.getById(userId);
+        if (currentUser == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        return currentUser;
+    }
+
 }
 
 

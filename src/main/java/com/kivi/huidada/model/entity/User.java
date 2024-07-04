@@ -43,7 +43,7 @@ public class User implements Serializable {
      * 用户权限、0为普通用户，1为管理员，-1为禁止人员
      */
     @TableField(value = "role")
-    private Integer role;
+    private String role;
 
     /**
      * 微信开放平台id
