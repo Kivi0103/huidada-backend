@@ -6,17 +6,16 @@
 
     <resultMap id="BaseResultMap" type="com.kivi.huidada.model.entity.ScoringResult">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="result_name" column="result_name" jdbcType="VARCHAR"/>
-            <result property="result_desc" column="result_desc" jdbcType="VARCHAR"/>
-            <result property="result_prop" column="result_prop" jdbcType="VARCHAR"/>
-            <result property="result_picture" column="result_picture" jdbcType="VARCHAR"/>
-            <result property="result_score_range" column="result_score_range" jdbcType="INTEGER"/>
-            <result property="test_paper_id" column="test_paper_id" jdbcType="BIGINT"/>
-            <result property="question_id" column="question_id" jdbcType="BIGINT"/>
-            <result property="user_id" column="user_id" jdbcType="BIGINT"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="is_delete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="resultName" column="result_name" jdbcType="VARCHAR"/>
+            <result property="resultDesc" column="result_desc" jdbcType="VARCHAR"/>
+            <result property="resultProp" column="result_prop" jdbcType="VARCHAR"/>
+            <result property="resultPicture" column="result_picture" jdbcType="VARCHAR"/>
+            <result property="resultScoreRange" column="result_score_range" jdbcType="INTEGER"/>
+            <result property="testPaperId" column="test_paper_id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

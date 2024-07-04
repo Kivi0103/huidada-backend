@@ -2,6 +2,9 @@ package com.kivi.huidada.service;
 
 import com.kivi.huidada.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kivi.huidada.model.vo.UserVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Kivi
@@ -10,4 +13,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
+    Boolean register(String userName, String password, String passwordConfirm, String email);
+
+    UserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+    public UserVO getLoginUserVO(User user);
 }

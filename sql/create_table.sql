@@ -18,8 +18,7 @@ CREATE TABLE user
     create_time  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     is_delete    TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除、0表示未删除，1表示删除',
-    PRIMARY KEY (id),
-    index idx_unionId (union_id)
+    PRIMARY KEY (id)
 ) COMMENT ='用户表' ENGINE = InnoDB
                     collate = utf8mb4_unicode_ci;
 
@@ -51,7 +50,6 @@ CREATE TABLE scoring_result
     result_picture     VARCHAR(1024) COMMENT '结果图片、创建用户上传、存在cos中的地址',
     result_score_range INT COMMENT '结果得分范围，用于打分类试卷匹配结果，如 80，表示 80及以上的分数命中此结果',
     test_paper_id      BIGINT       NOT NULL COMMENT '该评分结果所属试卷id',
-    question_id        BIGINT       NOT NULL COMMENT '该评分结果所属题目id',
     user_id            BIGINT       NOT NULL COMMENT '试卷创建人id',
     create_time        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

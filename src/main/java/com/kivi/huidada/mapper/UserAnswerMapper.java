@@ -2,6 +2,7 @@ package com.kivi.huidada.mapper;
 
 import com.kivi.huidada.model.entity.UserAnswer;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Kivi

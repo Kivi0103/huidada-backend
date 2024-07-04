@@ -15,7 +15,7 @@ public class UserQueryRequestDTO implements Serializable {
     /**
      * 用户名
      */
-    private String user_name;
+    private String userName;
 
     private static final long serialVersionUID = 1L;
 

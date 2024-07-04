@@ -13,7 +13,7 @@ public class UserUpdateRequestDTO implements Serializable {
     /**
      * 用户名
      */
-    private String user_name;
+    private String userName;
 
     /**
      * 用户密码
@@ -23,7 +23,7 @@ public class UserUpdateRequestDTO implements Serializable {
     /**
      * 用户头像，关联到cos存储地址
      */
-    private String head_picture;
+    private String headPicture;
 
     private static final long serialVersionUID = 1L;
 }

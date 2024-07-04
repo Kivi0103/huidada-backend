@@ -2,6 +2,7 @@ package com.kivi.huidada.mapper;
 
 import com.kivi.huidada.model.entity.ScoringResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Kivi
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2024-07-03 14:49:05
 * @Entity com.kivi.huidada.model.entity.ScoringResult
 */
+
 public interface ScoringResultMapper extends BaseMapper<ScoringResult> {
 
 }

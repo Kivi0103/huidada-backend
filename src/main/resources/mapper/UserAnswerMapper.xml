@@ -6,15 +6,15 @@
 
     <resultMap id="BaseResultMap" type="com.kivi.huidada.model.entity.UserAnswer">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="test_paper_id" column="test_paper_id" jdbcType="BIGINT"/>
-            <result property="scoring_result_id" column="scoring_result_id" jdbcType="BIGINT"/>
-            <result property="scoring_type" column="scoring_type" jdbcType="TINYINT"/>
+            <result property="testPaperId" column="test_paper_id" jdbcType="BIGINT"/>
+            <result property="scoringResultId" column="scoring_result_id" jdbcType="BIGINT"/>
+            <result property="scoringType" column="scoring_type" jdbcType="TINYINT"/>
             <result property="choices" column="choices" jdbcType="VARCHAR"/>
             <result property="score" column="score" jdbcType="INTEGER"/>
-            <result property="user_id" column="user_id" jdbcType="BIGINT"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="is_delete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

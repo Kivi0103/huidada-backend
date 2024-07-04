@@ -14,22 +14,22 @@ public class UserAnswerQueryRequestDTO implements Serializable {
     /**
      * 作答人id
      */
-    private Long user_id;
+    private Long userId;
 
     /**
      * 所属试卷id
      */
-    private Long test_paper_id;
+    private Long testPaperId;
 
     /**
      * 答案命中的评分结果id，有可能为null，因为采用ai评分
      */
-    private Long scoring_result_id;
+    private Long scoringResultId;
 
     /**
      * 用户选择的打分策略，默认采用自定义打分策略，1表示ai评分
      */
-    private Integer scoring_type;
+    private Integer scoringType;
 
     private static final long serialVersionUID = 1L;
 }

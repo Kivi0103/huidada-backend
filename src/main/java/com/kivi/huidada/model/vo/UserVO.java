@@ -19,23 +19,23 @@ public class UserVO implements Serializable {
     /**
      * 用户名
      */
-    private String user_name;
+    private String userName;
 
 
     /**
      * 用户头像，关联到cos存储地址
      */
-    private String head_picture;
+    private String headPicture;
 
     /**
      * 创建时间
      */
-    private Date create_time;
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private Date update_time;
+    private Date updateTime;
 
 
     private static final long serialVersionUID = 1L;

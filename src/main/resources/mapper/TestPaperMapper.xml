@@ -6,18 +6,18 @@
 
     <resultMap id="BaseResultMap" type="com.kivi.huidada.model.entity.TestPaper">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="test_name" column="test_name" jdbcType="VARCHAR"/>
+            <result property="testName" column="test_name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
-            <result property="question_content" column="question_content" jdbcType="VARCHAR"/>
-            <result property="is_ai" column="is_ai" jdbcType="TINYINT"/>
-            <result property="user_id" column="user_id" jdbcType="BIGINT"/>
-            <result property="user_name" column="user_name" jdbcType="VARCHAR"/>
-            <result property="bg_picture" column="bg_picture" jdbcType="VARCHAR"/>
+            <result property="questionContent" column="question_content" jdbcType="VARCHAR"/>
+            <result property="isAi" column="is_ai" jdbcType="TINYINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="bgPicture" column="bg_picture" jdbcType="VARCHAR"/>
             <result property="type" column="type" jdbcType="TINYINT"/>
-            <result property="scoring_strategy" column="scoring_strategy" jdbcType="TINYINT"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="is_delete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="scoringStrategy" column="scoring_strategy" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
