@@ -1,9 +1,11 @@
 package com.kivi.huidada.model.vo;
 
+import com.kivi.huidada.model.dto.test_paper.QuestionItem;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 试卷表
@@ -29,7 +31,7 @@ public class TestPaperVO implements Serializable {
     /**
      * 题目内容，每道题由题目、选项key，选项值构成
      */
-    private String questionContent;
+    private List<QuestionItem> questionContent;
 
     /**
      * 是否为ai生成试卷题目，0表示自定义的试卷题目，1表示ai试卷

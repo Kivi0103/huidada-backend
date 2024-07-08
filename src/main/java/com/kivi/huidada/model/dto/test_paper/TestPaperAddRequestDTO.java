@@ -1,6 +1,8 @@
 package com.kivi.huidada.model.dto.test_paper;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +23,7 @@ public class TestPaperAddRequestDTO implements Serializable {
     /**
      * 题目内容，每道题由题目、选项key，选项值构成
      */
-    private List<String > questionContent;
+    private List<QuestionItem> questionContent;
 
     /**
      * 是否为ai生成试卷题目，0表示自定义的试卷题目，1表示ai试卷
