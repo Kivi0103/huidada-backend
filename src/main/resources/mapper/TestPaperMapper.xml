@@ -14,17 +14,19 @@
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
             <result property="bgPicture" column="bg_picture" jdbcType="VARCHAR"/>
             <result property="type" column="type" jdbcType="TINYINT"/>
-            <result property="scoringStrategy" column="scoring_strategy" jdbcType="TINYINT"/>
+            <result property="scoringStrategyType" column="scoring_strategy_type" jdbcType="TINYINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="reviewMessage" column="review_message" jdbcType="VARCHAR"/>
+            <result property="reviewStatus" column="review_status" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,test_name,description,
         question_content,is_ai,user_id,
         user_name,bg_picture,type,
-        scoring_strategy,create_time,update_time,
-        is_delete
+        scoring_strategy_type,create_time,update_time,
+        is_delete, review_message, review_status
     </sql>
 </mapper>

@@ -1,6 +1,8 @@
 package com.kivi.huidada.model.vo;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.kivi.huidada.model.dto.test_paper.QuestionItem;
+import com.kivi.huidada.model.entity.TestPaper;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -61,7 +63,7 @@ public class TestPaperVO implements Serializable {
     /**
      * 评分策略类型，0表示用户自定义的评分策略，1表示ai生成的评分策略
      */
-    private Integer scoringStrategy;
+    private Integer scoringStrategyType;
 
     /**
      * 创建时间
@@ -79,4 +81,13 @@ public class TestPaperVO implements Serializable {
     private Integer isDelete;
 
     private static final long serialVersionUID = 1L;
+
+    public static TestPaperVO objToVo(TestPaper testPaper) {
+        if (testPaper == null) {
+            return null;
+        }
+        TestPaperVO vo = new TestPaperVO();
+        BeanUtil.copyProperties(testPaper, vo);
+        return vo;
+    }
 }

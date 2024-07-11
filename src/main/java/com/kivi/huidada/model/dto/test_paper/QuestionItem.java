@@ -11,12 +11,12 @@ public class QuestionItem {
 
     private String questionDesc;
 
-    private List<option> options;
+    private List<Option> options;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class option{
+    private static class Option{
         private String result;
         private int score;
         private String optionDesc;

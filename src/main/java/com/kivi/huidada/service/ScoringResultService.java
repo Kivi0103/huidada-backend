@@ -1,7 +1,10 @@
 package com.kivi.huidada.service;
 
+import com.kivi.huidada.model.dto.scoring_result.ScoringResultAddRequestDTO;
 import com.kivi.huidada.model.entity.ScoringResult;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Kivi
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ScoringResultService extends IService<ScoringResult> {
 
+    Boolean add(ScoringResultAddRequestDTO scoringResultAddRequestDTO, HttpServletRequest request);
 }

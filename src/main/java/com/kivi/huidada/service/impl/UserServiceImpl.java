@@ -121,11 +121,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 获取当前登录用户
+     * 获取当前登录用户， 用于后端其他业务添加用户信息时查询
      *
      * @param request
      * @return
      */
+    // todo 优化，从缓存中获取用户信息
     @Override
     public User getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录

@@ -70,8 +70,20 @@ public class TestPaper implements Serializable {
     /**
      * 评分策略类型，0表示用户自定义的评分策略，1表示ai生成的评分策略
      */
-    @TableField(value = "scoring_strategy")
-    private Integer scoringStrategy;
+    @TableField(value = "scoring_strategy_type")
+    private Integer scoringStrategyType;
+
+    /**
+     * 审核状态：0-待审核, 1-通过, 2-拒绝
+     */
+    @TableField(value = "review_status")
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    @TableField(value = "review_message")
+    private String reviewMessage;
 
     /**
      * 创建时间

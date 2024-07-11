@@ -41,7 +41,7 @@ public class TestPaperUpdateRequestDTO implements Serializable {
     /**
      * 评分策略类型，0表示用户自定义的评分策略，1表示ai生成的评分策略
      */
-    private Integer scoringStrategy;
+    private Integer scoringStrategyType;
 
     private static final long serialVersionUID = 1L;
 }

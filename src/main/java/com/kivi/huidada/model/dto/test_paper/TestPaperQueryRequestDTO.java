@@ -1,15 +1,21 @@
 package com.kivi.huidada.model.dto.test_paper;
 
+import com.kivi.huidada.common.PageRequest;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class TestPaperQueryRequestDTO implements Serializable {
+public class TestPaperQueryRequestDTO extends PageRequest implements Serializable {
     /**
      * 试卷id
      */
     private Long id;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
 
     /**
      * 试卷名称
@@ -32,9 +38,24 @@ public class TestPaperQueryRequestDTO implements Serializable {
     private Integer type;
 
     /**
+     * 审核状态：0-待审核, 1-通过, 2-拒绝
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
+    /**
      * 评分策略类型，0表示用户自定义的评分策略，1表示ai生成的评分策略
      */
-    private Integer scoringStrategy;
+    private Integer scoringStrategyType;
+
+    /**
+     * 搜索词
+     */
+    private String searchText;
 
     private static final long serialVersionUID = 1L;
 }
