@@ -16,7 +16,7 @@ public class QuestionItem {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Option{
+    public static class Option{
         private String result;
         private int score;
         private String optionDesc;

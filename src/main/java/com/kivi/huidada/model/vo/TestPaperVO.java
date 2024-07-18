@@ -1,11 +1,14 @@
 package com.kivi.huidada.model.vo;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kivi.huidada.model.dto.test_paper.QuestionItem;
 import com.kivi.huidada.model.entity.TestPaper;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,7 @@ public class TestPaperVO implements Serializable {
     /**
      * 试卷id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     /**
@@ -87,7 +91,20 @@ public class TestPaperVO implements Serializable {
             return null;
         }
         TestPaperVO vo = new TestPaperVO();
-        BeanUtil.copyProperties(testPaper, vo);
+        vo.setId(testPaper.getId());
+        vo.setTestName(testPaper.getTestName());
+        vo.setDescription(testPaper.getDescription());
+        // 将json字符串转成列表
+        vo.setQuestionContent(JSONUtil.toList(testPaper.getQuestionContent(), QuestionItem.class));
+        vo.setIsAi(testPaper.getIsAi());
+        vo.setUserId(testPaper.getUserId());
+        vo.setUserName(testPaper.getUserName());
+        vo.setBgPicture(testPaper.getBgPicture());
+        vo.setType(testPaper.getType());
+        vo.setScoringStrategyType(testPaper.getScoringStrategyType());
+        vo.setCreateTime(testPaper.getCreateTime());
+        vo.setUpdateTime(testPaper.getUpdateTime());
+        vo.setIsDelete(testPaper.getIsDelete());
         return vo;
     }
 }

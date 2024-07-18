@@ -1,7 +1,12 @@
 package com.kivi.huidada.service;
 
+import com.kivi.huidada.model.dto.user_answer.CommitUserChoiceRequestDTO;
 import com.kivi.huidada.model.entity.UserAnswer;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kivi.huidada.model.vo.TestResultVO;
+import com.kivi.huidada.model.vo.UserAnswerVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Kivi
@@ -10,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserAnswerService extends IService<UserAnswer> {
 
+    TestResultVO submitCustomAnswer(CommitUserChoiceRequestDTO answer, HttpServletRequest request);
 }

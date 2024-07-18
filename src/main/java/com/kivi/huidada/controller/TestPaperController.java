@@ -16,10 +16,7 @@ import com.kivi.huidada.service.TestPaperService;
 import com.kivi.huidada.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +33,12 @@ public class TestPaperController {
     @Resource
     private UserService userService;
 
+    /**
+     * 分页查询测试
+     * @param testPaperQueryRequestDTO
+     * @param request
+     * @return
+     */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<TestPaperVO>> listAppVOByPage(@RequestBody TestPaperQueryRequestDTO testPaperQueryRequestDTO,
                                                            HttpServletRequest request) {
@@ -52,11 +55,29 @@ public class TestPaperController {
         return ResultUtils.success(testPaperService.getAppVOPage(appPage, request));
     }
 
+    /**
+     *
+     * 添加测试
+     * @param testPaperAddRequestDTO
+     * @param request
+     * @return
+     */
     @PostMapping("/add")
     public BaseResponse<Long> addTestPaper(@RequestBody TestPaperAddRequestDTO testPaperAddRequestDTO, HttpServletRequest request) {
         if( testPaperAddRequestDTO == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "添加测试参数错误");
         }
         return ResultUtils.success(testPaperService.addTestPaper(testPaperAddRequestDTO, request));
+    }
+
+    /**
+     *
+     * 获得测试总数
+     * @param request
+     * @return
+     */
+    @GetMapping("/getCount")
+    public BaseResponse<Long> getCount(HttpServletRequest request) {
+        return ResultUtils.success(testPaperService.count());
     }
 }

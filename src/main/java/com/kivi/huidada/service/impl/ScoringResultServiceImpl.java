@@ -40,7 +40,6 @@ public class ScoringResultServiceImpl extends ServiceImpl<ScoringResultMapper, S
             scoringResult.setUserId(loginUser.getId());
             if(!this.save(scoringResult))return false;
         }
-
         return true;
     }
 }
