@@ -2,7 +2,8 @@ package com.kivi.huidada.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kivi.huidada.common.ErrorCode;
+import com.kivi.huidada.model.dto.test_paper.AiGenerateQuestionRequestDTO;
+import com.kivi.huidada.model.dto.test_paper.QuestionItem;
 import com.kivi.huidada.model.dto.test_paper.TestPaperAddRequestDTO;
 import com.kivi.huidada.model.dto.test_paper.TestPaperQueryRequestDTO;
 import com.kivi.huidada.model.entity.TestPaper;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.kivi.huidada.model.vo.TestPaperVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Kivi
@@ -23,4 +25,6 @@ public interface TestPaperService extends IService<TestPaper> {
     Page<TestPaperVO> getAppVOPage(Page<TestPaper> appPage, HttpServletRequest request);
 
     Long addTestPaper(TestPaperAddRequestDTO testPaperAddRequestDTO, HttpServletRequest request);
+
+    List<QuestionItem> aiGenerateQuestion(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request);
 }

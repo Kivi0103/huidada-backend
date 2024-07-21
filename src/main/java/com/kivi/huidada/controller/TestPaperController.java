@@ -6,11 +6,15 @@ import com.kivi.huidada.common.ErrorCode;
 import com.kivi.huidada.common.ResultUtils;
 import com.kivi.huidada.exception.BusinessException;
 import com.kivi.huidada.exception.ThrowUtils;
+import com.kivi.huidada.manager.ZhiPuAiManager;
+import com.kivi.huidada.model.dto.test_paper.AiGenerateQuestionRequestDTO;
+import com.kivi.huidada.model.dto.test_paper.QuestionItem;
 import com.kivi.huidada.model.dto.test_paper.TestPaperAddRequestDTO;
 import com.kivi.huidada.model.dto.test_paper.TestPaperQueryRequestDTO;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.kivi.huidada.model.entity.User;
 import com.kivi.huidada.model.enums.TestPaperReviewStatusEnum;
+import com.kivi.huidada.model.vo.QuestionContentVO;
 import com.kivi.huidada.model.vo.TestPaperVO;
 import com.kivi.huidada.service.TestPaperService;
 import com.kivi.huidada.service.UserService;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/testPaper")
@@ -30,8 +35,6 @@ public class TestPaperController {
     @Resource
     private TestPaperService testPaperService;
 
-    @Resource
-    private UserService userService;
 
     /**
      * 分页查询测试
@@ -63,11 +66,11 @@ public class TestPaperController {
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addTestPaper(@RequestBody TestPaperAddRequestDTO testPaperAddRequestDTO, HttpServletRequest request) {
+    public BaseResponse<String> addTestPaper(@RequestBody TestPaperAddRequestDTO testPaperAddRequestDTO, HttpServletRequest request) {
         if( testPaperAddRequestDTO == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "添加测试参数错误");
         }
-        return ResultUtils.success(testPaperService.addTestPaper(testPaperAddRequestDTO, request));
+        return ResultUtils.success(testPaperService.addTestPaper(testPaperAddRequestDTO, request).toString());
     }
 
     /**
@@ -80,4 +83,19 @@ public class TestPaperController {
     public BaseResponse<Long> getCount(HttpServletRequest request) {
         return ResultUtils.success(testPaperService.count());
     }
+
+    /**
+     * ai生成题目请求
+     */
+    @PostMapping("/aiGenerateQuestion")
+    public BaseResponse<QuestionContentVO> aiGenerateQuestion(@RequestBody AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request) {
+        if (aiGenerateQuestionRequestDTO == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "ai生成题目参数错误");
+        }
+        List<QuestionItem> questions = testPaperService.aiGenerateQuestion(aiGenerateQuestionRequestDTO, request);
+        QuestionContentVO questionContentVO = new QuestionContentVO();
+        questionContentVO.setQuestionContent(questions);
+        return ResultUtils.success(questionContentVO);
+    }
+
 }

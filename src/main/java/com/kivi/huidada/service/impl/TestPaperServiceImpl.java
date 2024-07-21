@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kivi.huidada.common.ErrorCode;
 import com.kivi.huidada.constant.CommonConstant;
 import com.kivi.huidada.exception.BusinessException;
+import com.kivi.huidada.manager.ZhiPuAiManager;
+import com.kivi.huidada.model.dto.test_paper.AiGenerateQuestionRequestDTO;
 import com.kivi.huidada.model.dto.test_paper.QuestionItem;
 import com.kivi.huidada.model.dto.test_paper.TestPaperAddRequestDTO;
 import com.kivi.huidada.model.dto.test_paper.TestPaperQueryRequestDTO;
@@ -41,9 +43,31 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
     @Resource
     private UserService userService;
 
+    @Resource
+    private ZhiPuAiManager zhiPuAiManager;
+
+    private static final String SYSTEM_MESSAGE = "你是一位严谨的出题专家，我会给你如下信息：\n" +
+            "```\n" +
+            "应用名称，\n" +
+            "【【【应用描述】】】，\n" +
+            "应用类别，\n" +
+            "要生成的题目数，\n" +
+            "每个题目的选项数\n" +
+            "```\n" +
+            "\n" +
+            "请你根据上述信息，按照以下步骤来出题：\n" +
+            "1. 要求：题目和选项尽可能地短，题目不要包含序号，每题的选项数以我提供的为主，题目不能重复\n" +
+            "2. 严格按照下面的 json 格式输出题目和选项\n" +
+            "```\n" +
+            "[{\"options\":[{\"optionDesc\":\"选项内容\",\"key\":\"A\"},{\"optionDesc\":\"\",\"key\":\"B\"}],\"questionDesc\":\"题目标题\"}]\n" +
+            "```\n" +
+            "questionDesc 是题目，options 是选项，每个选项的 key 按照英文字母序（比如 A、B、C、D）以此类推，optionDesc 是选项内容\n" +
+            "3. 题目标题不需要添加1，2，3，4，5等序号\n" +
+            "4. 选项描述中不需要添加A,B,C,D等序号\n" +
+            "5. 返回的题目列表格式必须为 JSON 数组\n";
+
     /**
      * 获取查询条件
-     *
      * @param testPaperQueryRequest
      * @return
      */
@@ -131,6 +155,52 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
         // 保存到数据库并将id返回
         this.save(testPaper);
         return testPaper.getId();
+    }
+
+    @Override
+    public List<QuestionItem> aiGenerateQuestion(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request) {
+        // 校验参数
+        String testName = aiGenerateQuestionRequestDTO.getTestName();
+        String description = aiGenerateQuestionRequestDTO.getDescription();
+        Integer type = aiGenerateQuestionRequestDTO.getType();
+        Integer questionCount = aiGenerateQuestionRequestDTO.getQuestionCount();
+        Integer optionCount = aiGenerateQuestionRequestDTO.getOptionCount();
+
+        if( ObjectUtils.isEmpty(testName)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试名称不能为空");
+        }
+        if( ObjectUtils.isEmpty(description)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试描述不能为空");
+        }
+        if( ObjectUtils.isEmpty(type)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试类型不能为空");
+        }
+        if( ObjectUtils.isEmpty(questionCount)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不能为空");
+        }
+        if(questionCount<1){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不能小于1");
+        }
+        if( ObjectUtils.isEmpty(optionCount)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "选项数量不能为空");
+        }
+        if(optionCount<2){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "选项数量不能小于2");
+        }
+        StringBuilder userMessage = new StringBuilder();
+        userMessage.append(aiGenerateQuestionRequestDTO.getTestName()).append("，\n");
+        userMessage.append("【【【").append(aiGenerateQuestionRequestDTO.getDescription()).append("】】】，\n");
+        userMessage.append(aiGenerateQuestionRequestDTO.getType()==0?"打分类":"测评类").append("，\n");
+        userMessage.append(aiGenerateQuestionRequestDTO.getQuestionCount()).append("，\n");
+        userMessage.append(aiGenerateQuestionRequestDTO.getOptionCount()).append("\n");
+        // 调用ai接口生成题目
+        String aiQuestionContent = zhiPuAiManager.doStableRequest(userMessage.toString(), SYSTEM_MESSAGE);
+        int start = aiQuestionContent.indexOf("[");
+        int end = aiQuestionContent.lastIndexOf("]");
+        String jsonStr = aiQuestionContent.substring(start, end + 1);
+        // 转换为对象
+        List<QuestionItem> questionItemList = JSONUtil.toList(jsonStr, QuestionItem.class);
+        return questionItemList;
     }
 }
 

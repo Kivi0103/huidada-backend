@@ -7,23 +7,17 @@ import com.zhipu.oapi.service.v4.model.ChatMessage;
 import com.zhipu.oapi.service.v4.model.ChatMessageRole;
 import com.zhipu.oapi.service.v4.model.ModelApiResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 主类测试
- */
 @SpringBootTest
-class MainApplicationTests {
-
+class ZhiPuAiTest {
 
     @Test
     public void test() {
-        String apiKey = "";
+        String apiKey = "c3f9f6c47e96a5ab00a9f00208de4a63.BPoYhebCB8FVZZ3Z";
         // 创建客户端
         ClientV4 client = new ClientV4.Builder(apiKey).build();
         // 构造请求
@@ -42,5 +36,4 @@ class MainApplicationTests {
         ModelApiResponse invokeModelApiResp = client.invokeModelApi(chatCompletionRequest);
         System.out.println("model output:" + invokeModelApiResp.getMsg());
     }
-
 }
