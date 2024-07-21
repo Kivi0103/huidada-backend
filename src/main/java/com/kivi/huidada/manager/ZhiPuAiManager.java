@@ -18,7 +18,7 @@ public class ZhiPuAiManager {
     private ClientV4 clientV4;
 
     private static final Float STABLE_TEMPERATURE = 0.05f;
-    private static final Float UNSTABLE_TEMPERATURE = 0.99f;
+    private static final Float UNSTABLE_TEMPERATURE = 0.95f;
 
     /**
      * ai回复不稳定请求

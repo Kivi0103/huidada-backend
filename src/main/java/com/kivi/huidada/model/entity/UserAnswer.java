@@ -56,6 +56,18 @@ public class UserAnswer implements Serializable {
     private Long userId;
 
     /**
+     * 答案结果名称
+     */
+    @TableField(value = "result_name")
+    private String resultName;
+
+    /**
+     * 答案结果描述
+     */
+    @TableField(value = "result_desc")
+    private String resultDesc;
+
+    /**
      * 创建时间
      */
     @TableField(value = "create_time")

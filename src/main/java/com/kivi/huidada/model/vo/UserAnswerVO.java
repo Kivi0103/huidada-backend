@@ -47,6 +47,11 @@ public class UserAnswerVO implements Serializable {
     private Long userId;
 
     /**
+     * 作答人姓名
+     */
+    private String answeredUserName;
+
+    /**
      * 创建时间
      */
     private Date createTime;
