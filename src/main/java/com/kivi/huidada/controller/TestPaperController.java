@@ -7,10 +7,7 @@ import com.kivi.huidada.common.ResultUtils;
 import com.kivi.huidada.exception.BusinessException;
 import com.kivi.huidada.exception.ThrowUtils;
 import com.kivi.huidada.manager.ZhiPuAiManager;
-import com.kivi.huidada.model.dto.test_paper.AiGenerateQuestionRequestDTO;
-import com.kivi.huidada.model.dto.test_paper.QuestionItem;
-import com.kivi.huidada.model.dto.test_paper.TestPaperAddRequestDTO;
-import com.kivi.huidada.model.dto.test_paper.TestPaperQueryRequestDTO;
+import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.kivi.huidada.model.entity.User;
 import com.kivi.huidada.model.enums.TestPaperReviewStatusEnum;
@@ -49,8 +46,6 @@ public class TestPaperController {
         long size = testPaperQueryRequestDTO.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 只能看到已过审的应用
-        testPaperQueryRequestDTO.setReviewStatus(TestPaperReviewStatusEnum.PASS.getValue());
         // 查询数据库
         Page<TestPaper> appPage =testPaperService.page(new Page<>(current, size),
                 testPaperService.getQueryWrapper(testPaperQueryRequestDTO));
@@ -79,9 +74,12 @@ public class TestPaperController {
      * @param request
      * @return
      */
-    @GetMapping("/getCount")
-    public BaseResponse<Long> getCount(HttpServletRequest request) {
-        return ResultUtils.success(testPaperService.count());
+    @PostMapping("/getTestPaperCount")
+    public BaseResponse<Long> getTestPaperCount(@RequestBody TestPaperQueryRequestDTO testPaperQueryRequestDTO, HttpServletRequest request) {
+        if( testPaperQueryRequestDTO == null){
+            return ResultUtils.success(testPaperService.count());
+        }
+        return ResultUtils.success(testPaperService.count(testPaperService.getQueryWrapper(testPaperQueryRequestDTO)));
     }
 
     /**
@@ -98,4 +96,39 @@ public class TestPaperController {
         return ResultUtils.success(questionContentVO);
     }
 
+    /**
+     * 更改测试
+     * @param testPaperUpdateRequestDTO
+     * @param request
+     * @return
+     */
+    @PostMapping("/updateTestPaper")
+    public BaseResponse<Boolean> updateTestPaper(@RequestBody TestPaperUpdateRequestDTO testPaperUpdateRequestDTO, HttpServletRequest request) {
+        if( testPaperUpdateRequestDTO == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "更新测试参数错误");
+        }
+        return ResultUtils.success(testPaperService.updateTestPaper(testPaperUpdateRequestDTO, request));
+    }
+
+    @PostMapping("/getTestPaperById")
+    public BaseResponse<TestPaperVO> getTestPaperById(@RequestBody GetTestPaperByIdDTO getTestPaperByIdDTO, HttpServletRequest request) {
+        Long id = getTestPaperByIdDTO.getId();
+        if( id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "获取测试参数错误");
+        }
+        TestPaper testPaper = testPaperService.getById(id);
+        if(testPaper == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "测试不存在");
+        }
+        return ResultUtils.success(TestPaperVO.objToVo(testPaper));
+    }
+
+    @PostMapping("/deleteTestPaper")
+    public BaseResponse<Boolean> deleteTestPaper(@RequestBody DeleteTestPaperDTO deleteTestPaperDTO, HttpServletRequest request) {
+        Long id = deleteTestPaperDTO.getId();
+        if( id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "删除测试参数错误");
+        }
+        return ResultUtils.success(testPaperService.delete(id));
+    }
 }

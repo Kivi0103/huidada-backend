@@ -1,5 +1,6 @@
 package com.kivi.huidada.model.dto.scoring_result;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScoringResultItem {
+    /**
+     * 结果ID
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long id;
     /**
      * 结果名称
      */

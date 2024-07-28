@@ -1,6 +1,7 @@
 package com.kivi.huidada.model.dto.test_paper;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,11 @@ import java.util.List;
 
 @Data
 public class TestPaperAddRequestDTO implements Serializable {
+    /**
+     * 测试id
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long id;
 
     /**
      * 试卷名称

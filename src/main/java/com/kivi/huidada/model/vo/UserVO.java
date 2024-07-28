@@ -1,5 +1,6 @@
 package com.kivi.huidada.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class UserVO implements Serializable {
     /**
      * 用户id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     /**

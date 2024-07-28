@@ -47,6 +47,7 @@ public class TestPaperVO implements Serializable {
     /**
      * 试卷创建人id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
 
     /**
@@ -84,6 +85,16 @@ public class TestPaperVO implements Serializable {
      */
     private Integer isDelete;
 
+    /**
+     * 审核状态
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
     private static final long serialVersionUID = 1L;
 
     public static TestPaperVO objToVo(TestPaper testPaper) {
@@ -105,6 +116,8 @@ public class TestPaperVO implements Serializable {
         vo.setCreateTime(testPaper.getCreateTime());
         vo.setUpdateTime(testPaper.getUpdateTime());
         vo.setIsDelete(testPaper.getIsDelete());
+        vo.setReviewStatus(testPaper.getReviewStatus());
+        vo.setReviewMessage(testPaper.getReviewMessage());
         return vo;
     }
 }

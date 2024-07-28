@@ -1,11 +1,9 @@
 package com.kivi.huidada.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kivi.huidada.model.dto.test_paper.AiGenerateQuestionRequestDTO;
-import com.kivi.huidada.model.dto.test_paper.QuestionItem;
-import com.kivi.huidada.model.dto.test_paper.TestPaperAddRequestDTO;
-import com.kivi.huidada.model.dto.test_paper.TestPaperQueryRequestDTO;
+import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kivi.huidada.model.vo.TestPaperVO;
@@ -27,4 +25,10 @@ public interface TestPaperService extends IService<TestPaper> {
     Long addTestPaper(TestPaperAddRequestDTO testPaperAddRequestDTO, HttpServletRequest request);
 
     List<QuestionItem> aiGenerateQuestion(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request);
+
+    Boolean updateTestPaper(TestPaperUpdateRequestDTO testPaperUpdateRequestDTO, HttpServletRequest request);
+
+    UpdateWrapper<TestPaper> getUpdateWrapper(TestPaperUpdateRequestDTO testPaperUpdateRequestDTO);
+
+    Boolean delete(Long id);
 }

@@ -1,5 +1,6 @@
 package com.kivi.huidada.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.kivi.huidada.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kivi.huidada.model.vo.UserVO;
@@ -22,4 +23,6 @@ public interface UserService extends IService<User> {
     User getLoginUser(HttpServletRequest request);
 
     boolean userLogout(HttpServletRequest request);
+
+    Wrapper<User> getUpdateWrapper(User user);
 }

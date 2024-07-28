@@ -1,5 +1,6 @@
 package com.kivi.huidada.model.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ public class UserUpdateRequestDTO implements Serializable {
     /**
      * 用户id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     /**
      * 用户名
@@ -16,9 +18,14 @@ public class UserUpdateRequestDTO implements Serializable {
     private String userName;
 
     /**
-     * 用户密码
+     * 用户原密码
      */
-    private String password;
+    private String oldPassword;
+
+    /**
+     * 用户新密码
+     */
+    private String newPassword;
 
     /**
      * 用户头像，关联到cos存储地址

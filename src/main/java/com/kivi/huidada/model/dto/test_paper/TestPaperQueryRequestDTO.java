@@ -1,5 +1,6 @@
 package com.kivi.huidada.model.dto.test_paper;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kivi.huidada.common.PageRequest;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ public class TestPaperQueryRequestDTO extends PageRequest implements Serializabl
     /**
      * 试卷id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     /**

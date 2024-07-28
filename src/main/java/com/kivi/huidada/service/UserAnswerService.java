@@ -1,6 +1,9 @@
 package com.kivi.huidada.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kivi.huidada.model.dto.user_answer.CommitUserChoiceRequestDTO;
+import com.kivi.huidada.model.dto.user_answer.UserAnswerQueryRequestDTO;
 import com.kivi.huidada.model.entity.UserAnswer;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kivi.huidada.model.vo.TestResultVO;
@@ -16,4 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserAnswerService extends IService<UserAnswer> {
 
     TestResultVO submitCustomAnswer(CommitUserChoiceRequestDTO answer, HttpServletRequest request);
+
+    QueryWrapper<UserAnswer> getQueryWrapper(UserAnswerQueryRequestDTO userAnswerQueryRequestDTO);
+
+    Page<UserAnswerVO> getUserAnswerVOPage(Page<UserAnswer> userAnswerPage, HttpServletRequest request);
 }

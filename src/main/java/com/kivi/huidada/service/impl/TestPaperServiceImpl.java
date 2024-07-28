@@ -3,16 +3,14 @@ package com.kivi.huidada.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kivi.huidada.common.ErrorCode;
 import com.kivi.huidada.constant.CommonConstant;
 import com.kivi.huidada.exception.BusinessException;
 import com.kivi.huidada.manager.ZhiPuAiManager;
-import com.kivi.huidada.model.dto.test_paper.AiGenerateQuestionRequestDTO;
-import com.kivi.huidada.model.dto.test_paper.QuestionItem;
-import com.kivi.huidada.model.dto.test_paper.TestPaperAddRequestDTO;
-import com.kivi.huidada.model.dto.test_paper.TestPaperQueryRequestDTO;
+import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.kivi.huidada.model.entity.User;
 import com.kivi.huidada.model.vo.TestPaperVO;
@@ -89,7 +87,7 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "user_id", userId);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
-                sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
+                sortOrder.equals(CommonConstant.SORT_ORDER_DESC),
                 sortField);
         return queryWrapper;
     }
@@ -130,10 +128,24 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
         TestPaper testPaper = new TestPaper();
         BeanUtils.copyProperties(testPaperAddRequestDTO, testPaper);
         testPaper.setQuestionContent(JSONUtil.toJsonStr(questionContent));
+        testPaper.setId(testPaperAddRequestDTO.getId());
         testPaper.setUserId(loginUser.getId());
         testPaper.setUserName(loginUser.getUserName());
-        // 保存到数据库并将id返回
-        this.save(testPaper);
+        // 如果数据库中存在id和testName相同的数据则更新，否则新增
+        QueryWrapper<TestPaper> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", testPaperAddRequestDTO.getId());
+        queryWrapper.eq("test_name", testName);
+
+        TestPaper existingTestPaper = this.getOne(queryWrapper);
+
+        if (existingTestPaper != null) {
+            // 更新现有记录
+            testPaper.setId(existingTestPaper.getId());
+            this.updateById(testPaper);
+        } else {
+            // 新增记录
+            this.save(testPaper);
+        }
         return testPaper.getId();
     }
 
@@ -182,6 +194,49 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
         List<QuestionItem> questionItemList = JSONUtil.toList(jsonStr, QuestionItem.class);
         return questionItemList;
     }
+
+    @Override
+    public Boolean updateTestPaper(TestPaperUpdateRequestDTO testPaperUpdateRequestDTO, HttpServletRequest request) {
+        UpdateWrapper<TestPaper> updateWrapper = getUpdateWrapper(testPaperUpdateRequestDTO);
+        return this.update(updateWrapper);
+    }
+
+    @Override
+    public UpdateWrapper<TestPaper> getUpdateWrapper(TestPaperUpdateRequestDTO testPaperUpdateRequestDTO) {
+        UpdateWrapper<TestPaper> updateWrapper = new UpdateWrapper<>();
+        if (testPaperUpdateRequestDTO == null) {
+            return updateWrapper;
+        }
+        // 从对象中取值
+        Long id = testPaperUpdateRequestDTO.getId();
+        String testName = testPaperUpdateRequestDTO.getTestName();
+        String description = testPaperUpdateRequestDTO.getDescription();
+        List<QuestionItem> questionContent = testPaperUpdateRequestDTO.getQuestionContent();
+        Integer isAi = testPaperUpdateRequestDTO.getIsAi();
+        String bgPicture = testPaperUpdateRequestDTO.getBgPicture();
+        Integer type = testPaperUpdateRequestDTO.getType();
+        Integer scoringStrategyType = testPaperUpdateRequestDTO.getScoringStrategyType();
+        // 补充需要的更新条件
+        updateWrapper.eq("id", id);
+        updateWrapper.set(ObjectUtils.isNotEmpty(testName), "test_name", testName);
+        updateWrapper.set(ObjectUtils.isNotEmpty(description), "description", description);
+        updateWrapper.set(ObjectUtils.isNotEmpty(isAi), "is_ai", isAi);
+        updateWrapper.set(ObjectUtils.isNotEmpty(bgPicture), "bg_picture", bgPicture);
+        updateWrapper.set(ObjectUtils.isNotEmpty(type), "type", type);
+        updateWrapper.set(ObjectUtils.isNotEmpty(scoringStrategyType), "scoring_strategy", scoringStrategyType);
+        return updateWrapper;
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        // 构建更新条件和更新内容
+        UpdateWrapper<TestPaper> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id).set("is_delete", 1);
+        // 执行更新操作
+        return this.update(updateWrapper);
+    }
+
+
 }
 
 

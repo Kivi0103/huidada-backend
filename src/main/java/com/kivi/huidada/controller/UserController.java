@@ -7,6 +7,7 @@ import com.kivi.huidada.exception.BusinessException;
 import com.kivi.huidada.exception.ThrowUtils;
 import com.kivi.huidada.model.dto.user.UserAddRequestDTO;
 import com.kivi.huidada.model.dto.user.UserLoginRequestDTO;
+import com.kivi.huidada.model.dto.user.UserUpdateRequestDTO;
 import com.kivi.huidada.model.entity.User;
 import com.kivi.huidada.model.vo.UserVO;
 import com.kivi.huidada.service.UserService;
@@ -16,10 +17,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 
 @RestController
 @Api(tags = "UserController")
@@ -27,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
     @Resource
     private UserService userService;
+
+    private static final String SALT = "kivi";
 
     /**
      * 用户注册接口
@@ -96,5 +101,61 @@ public class UserController {
         }
         boolean result = userService.userLogout(request);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 修改密码
+     * @param userUpdateRequestDTO
+     * @return
+     */
+    @PostMapping("/updatePassword")
+    public BaseResponse<Boolean> userUpdatePassword(@RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+        if (userUpdateRequestDTO == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User oldUser = userService.getById(userUpdateRequestDTO.getId());
+        if (oldUser == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userUpdateRequestDTO.getOldPassword()).getBytes());
+        if(!oldUser.getPassword().equals(encryptPassword)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "原密码错误");
+        }
+        String newPassword = DigestUtils.md5DigestAsHex((SALT + userUpdateRequestDTO.getNewPassword()).getBytes());
+        User user = new User();
+        user.setId(userUpdateRequestDTO.getId());
+        user.setPassword(newPassword);
+        return ResultUtils.success(userUpdate(user));
+    }
+
+    @PostMapping("/updateUserName")
+    public BaseResponse<Boolean> userUpdateUserName(@RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+        if (userUpdateRequestDTO == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = new User();
+        User oldUser = userService.getById(userUpdateRequestDTO.getId());
+        if (oldUser == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "用户不存在");
+        }
+        if(oldUser.getUserName().equals(userUpdateRequestDTO.getUserName())){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "当前用户名与原用户名相同");
+        }
+        Long count = userService.query().eq("user_name", userUpdateRequestDTO.getUserName()).count();
+        if (count > 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户名已存在");
+        }
+        user.setId(userUpdateRequestDTO.getId());
+        user.setUserName(userUpdateRequestDTO.getUserName());
+        return ResultUtils.success(userUpdate(user));
+    }
+
+
+    public Boolean userUpdate( User user) {
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean result = userService.update(userService.getUpdateWrapper(user));
+        return result;
     }
 }

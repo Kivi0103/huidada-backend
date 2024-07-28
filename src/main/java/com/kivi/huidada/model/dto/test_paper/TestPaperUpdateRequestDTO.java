@@ -1,5 +1,6 @@
 package com.kivi.huidada.model.dto.test_paper;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -7,6 +8,11 @@ import java.util.List;
 
 @Data
 public class TestPaperUpdateRequestDTO implements Serializable {
+    /**
+     * 试卷id
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long id;
 
     /**
      * 试卷名称
@@ -42,6 +48,11 @@ public class TestPaperUpdateRequestDTO implements Serializable {
      * 评分策略类型，0表示用户自定义的评分策略，1表示ai生成的评分策略
      */
     private Integer scoringStrategyType;
+
+    /**
+     * 是否删除
+     */
+    private Integer isDelete;
 
     private static final long serialVersionUID = 1L;
 }

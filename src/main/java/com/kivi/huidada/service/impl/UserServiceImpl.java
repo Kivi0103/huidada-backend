@@ -1,6 +1,8 @@
 package com.kivi.huidada.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kivi.huidada.common.ErrorCode;
 import com.kivi.huidada.exception.BusinessException;
@@ -17,6 +19,8 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.security.URIParameter;
+import java.util.Date;
 
 /**
 * @author Kivi
@@ -157,6 +161,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return true;
+    }
+
+    /**
+     * 得到跟新用户信息的wrapper
+     * @param user
+     * @return
+     */
+    @Override
+    public UpdateWrapper<User> getUpdateWrapper(User user) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        Long id = user.getId();
+        String userName = user.getUserName();
+        String password = user.getPassword();
+        String headPicture = user.getHeadPicture();
+        String role = user.getRole();
+        String unionId = user.getUnionId();
+        String mpOpenId = user.getMpOpenId();
+
+        updateWrapper.eq("id", user.getId());
+        if (userName!= null) {
+            updateWrapper.set("user_name", userName);
+        }
+        if (password != null) {
+            updateWrapper.set("password", password);
+        }
+        if (headPicture != null) {
+            updateWrapper.set("head_picture", headPicture);
+        }
+        if (role != null) {
+            updateWrapper.set("role", role);
+        }
+        if (unionId != null) {
+            updateWrapper.set("union_id", unionId);
+        }
+        if (mpOpenId != null) {
+            updateWrapper.set("mp_open_id", mpOpenId);
+        }
+        return updateWrapper;
     }
 
 }

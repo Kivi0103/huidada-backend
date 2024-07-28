@@ -1,11 +1,13 @@
 package com.kivi.huidada.model.dto.user_answer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kivi.huidada.common.PageRequest;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class UserAnswerQueryRequestDTO implements Serializable {
+public class UserAnswerQueryRequestDTO extends PageRequest implements Serializable {
     /**
      * 用户答案id
      */
@@ -14,6 +16,7 @@ public class UserAnswerQueryRequestDTO implements Serializable {
     /**
      * 作答人id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
 
     /**
@@ -32,4 +35,6 @@ public class UserAnswerQueryRequestDTO implements Serializable {
     private Integer scoringType;
 
     private static final long serialVersionUID = 1L;
+
+
 }

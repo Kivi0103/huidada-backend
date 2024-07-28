@@ -1,5 +1,6 @@
 package com.kivi.huidada.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class ScoringResultVO implements Serializable {
     /**
      * 评分策略id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     /**
@@ -49,6 +51,7 @@ public class ScoringResultVO implements Serializable {
     /**
      * 试卷创建人id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
 
     /**

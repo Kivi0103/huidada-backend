@@ -1,6 +1,7 @@
 package com.kivi.huidada.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kivi.huidada.model.dto.scoring_result.ScoringResultAddRequestDTO;
 import com.kivi.huidada.model.dto.scoring_result.ScoringResultItem;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Kivi
@@ -38,9 +40,20 @@ public class ScoringResultServiceImpl extends ServiceImpl<ScoringResultMapper, S
             scoringResult.setTestPaperId(scoringResultAddRequestDTO.getTestPaperId());
             scoringResult.setResultProp(JSONUtil.toJsonStr(scoringResultItem.getResultProp()));
             scoringResult.setUserId(loginUser.getId());
-            if(!this.save(scoringResult))return false;
+            if(scoringResultItem.getId() == null){
+                if(!this.save(scoringResult))return false;
+            }else{
+                this.updateById(scoringResult);
+            }
         }
         return true;
+    }
+
+    @Override
+    public List<ScoringResultItem> listByTestId(Long testId) {
+        List<ScoringResult> scoringResults = this.list(new QueryWrapper<ScoringResult>().eq("test_paper_id", testId));
+        List<ScoringResultItem> scoringResultItems = JSONUtil.toList(JSONUtil.toJsonStr(scoringResults), ScoringResultItem.class);
+        return scoringResultItems;
     }
 }
 
