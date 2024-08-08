@@ -147,6 +147,19 @@ public class UserController {
         }
         user.setId(userUpdateRequestDTO.getId());
         user.setUserName(userUpdateRequestDTO.getUserName());
+        user.setHeadPicture(userUpdateRequestDTO.getHeadPicture());
+        return ResultUtils.success(userUpdate(user));
+    }
+
+    @PostMapping("/updateHeadPicture")
+    public BaseResponse<Boolean> updateHeadPicture(@RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+        if (userUpdateRequestDTO == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = new User();
+        user.setId(userUpdateRequestDTO.getId());
+        user.setUserName(userUpdateRequestDTO.getUserName());
+        user.setHeadPicture(userUpdateRequestDTO.getHeadPicture());
         return ResultUtils.success(userUpdate(user));
     }
 
