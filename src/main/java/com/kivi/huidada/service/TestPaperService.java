@@ -7,6 +7,7 @@ import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kivi.huidada.model.vo.TestPaperVO;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -31,4 +32,8 @@ public interface TestPaperService extends IService<TestPaper> {
     UpdateWrapper<TestPaper> getUpdateWrapper(TestPaperUpdateRequestDTO testPaperUpdateRequestDTO);
 
     Boolean delete(Long id);
+
+    String validAndGetUserMessage(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request);
+
+    SseEmitter aiGenerateQuestionSSE(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request);
 }

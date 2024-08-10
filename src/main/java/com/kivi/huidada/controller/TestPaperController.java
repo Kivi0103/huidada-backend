@@ -1,5 +1,7 @@
 package com.kivi.huidada.controller;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kivi.huidada.common.BaseResponse;
 import com.kivi.huidada.common.ErrorCode;
@@ -15,13 +17,21 @@ import com.kivi.huidada.model.vo.QuestionContentVO;
 import com.kivi.huidada.model.vo.TestPaperVO;
 import com.kivi.huidada.service.TestPaperService;
 import com.kivi.huidada.service.UserService;
+import com.zhipu.oapi.service.v4.model.ModelData;
+import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import scala.App;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/testPaper")
@@ -94,6 +104,18 @@ public class TestPaperController {
         QuestionContentVO questionContentVO = new QuestionContentVO();
         questionContentVO.setQuestionContent(questions);
         return ResultUtils.success(questionContentVO);
+    }
+
+    /**
+     * 流式生成题目
+     * @param aiGenerateQuestionRequestDTO
+     * @param request
+     * @return
+     */
+    @GetMapping("/ai_generate/sse")
+    public SseEmitter aiGenerateQuestionSSE(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request) {
+        ThrowUtils.throwIf(aiGenerateQuestionRequestDTO == null, ErrorCode.PARAMS_ERROR);
+        return testPaperService.aiGenerateQuestionSSE(aiGenerateQuestionRequestDTO, request);
     }
 
     /**

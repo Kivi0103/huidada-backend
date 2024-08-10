@@ -1,6 +1,7 @@
 package com.kivi.huidada.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kivi.huidada.common.ErrorCode;
 import com.kivi.huidada.constant.CommonConstant;
 import com.kivi.huidada.exception.BusinessException;
+import com.kivi.huidada.exception.ThrowUtils;
 import com.kivi.huidada.manager.ZhiPuAiManager;
 import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
@@ -18,16 +20,24 @@ import com.kivi.huidada.service.TestPaperService;
 import com.kivi.huidada.mapper.TestPaperMapper;
 import com.kivi.huidada.service.UserService;
 import com.kivi.huidada.utils.SqlUtils;
+import com.zhipu.oapi.service.v4.model.ModelData;
+import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import scala.App;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -151,42 +161,9 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
 
     @Override
     public List<QuestionItem> aiGenerateQuestion(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request) {
-        // 校验参数
-        String testName = aiGenerateQuestionRequestDTO.getTestName();
-        String description = aiGenerateQuestionRequestDTO.getDescription();
-        Integer type = aiGenerateQuestionRequestDTO.getType();
-        Integer questionCount = aiGenerateQuestionRequestDTO.getQuestionCount();
-        Integer optionCount = aiGenerateQuestionRequestDTO.getOptionCount();
-
-        if( ObjectUtils.isEmpty(testName)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试名称不能为空");
-        }
-        if( ObjectUtils.isEmpty(description)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试描述不能为空");
-        }
-        if( ObjectUtils.isEmpty(type)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试类型不能为空");
-        }
-        if( ObjectUtils.isEmpty(questionCount)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不能为空");
-        }
-        if(questionCount<1){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不能小于1");
-        }
-        if( ObjectUtils.isEmpty(optionCount)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "选项数量不能为空");
-        }
-        if(optionCount<2){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "选项数量不能小于2");
-        }
-        StringBuilder userMessage = new StringBuilder();
-        userMessage.append(aiGenerateQuestionRequestDTO.getTestName()).append("，\n");
-        userMessage.append("【【【").append(aiGenerateQuestionRequestDTO.getDescription()).append("】】】，\n");
-        userMessage.append(aiGenerateQuestionRequestDTO.getType()==0?"打分类":"测评类").append("，\n");
-        userMessage.append(aiGenerateQuestionRequestDTO.getQuestionCount()).append("，\n");
-        userMessage.append(aiGenerateQuestionRequestDTO.getOptionCount()).append("\n");
+        String userMessage = validAndGetUserMessage(aiGenerateQuestionRequestDTO, request);
         // 调用ai接口生成题目
-        String aiQuestionContent = zhiPuAiManager.doUnStableRequest(userMessage.toString(), CommonConstant.AI_GENERATE_QUESTIONS_SYSTEM_MESSAGE);
+        String aiQuestionContent = zhiPuAiManager.doUnStableRequest(userMessage, CommonConstant.AI_GENERATE_QUESTIONS_SYSTEM_MESSAGE);
         int start = aiQuestionContent.indexOf("[");
         int end = aiQuestionContent.lastIndexOf("]");
         String jsonStr = aiQuestionContent.substring(start, end + 1);
@@ -236,7 +213,99 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
         return this.update(updateWrapper);
     }
 
+    @Override
+    public String validAndGetUserMessage(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request) {
+        // 校验参数
+        String testName = aiGenerateQuestionRequestDTO.getTestName();
+        String description = aiGenerateQuestionRequestDTO.getDescription();
+        Integer type = aiGenerateQuestionRequestDTO.getType();
+        Integer questionCount = aiGenerateQuestionRequestDTO.getQuestionCount();
+        Integer optionCount = aiGenerateQuestionRequestDTO.getOptionCount();
 
+        if( ObjectUtils.isEmpty(testName)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试名称不能为空");
+        }
+        if( ObjectUtils.isEmpty(description)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试描述不能为空");
+        }
+        if( ObjectUtils.isEmpty(type)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试类型不能为空");
+        }
+        if( ObjectUtils.isEmpty(questionCount)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不能为空");
+        }
+        if(questionCount<1){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不能小于1");
+        }
+        if( ObjectUtils.isEmpty(optionCount)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "选项数量不能为空");
+        }
+        if(optionCount<2){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "选项数量不能小于2");
+        }
+        StringBuilder userMessage = new StringBuilder();
+        userMessage.append(aiGenerateQuestionRequestDTO.getTestName()).append("，\n");
+        userMessage.append("【【【").append(aiGenerateQuestionRequestDTO.getDescription()).append("】】】，\n");
+        userMessage.append("【【").append(aiGenerateQuestionRequestDTO.getQuestionCount()).append("】】").append("，\n");
+        userMessage.append(aiGenerateQuestionRequestDTO.getOptionCount()).append("\n");
+        return userMessage.toString();
+    }
+
+    /**
+     * SSE 方式生成试题
+     * @param aiGenerateQuestionRequestDTO
+     * @param request
+     * @return
+     */
+    @Override
+    public SseEmitter aiGenerateQuestionSSE(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request) {
+        // 校验参数
+        String userMessage = validAndGetUserMessage(aiGenerateQuestionRequestDTO, request);
+        // 建立 SSE 连接对象，0 表示永不超时
+        SseEmitter sseEmitter = new SseEmitter(0L);
+        // AI 生成，SSE 流式返回
+        Flowable<ModelData> modelDataFlowable = zhiPuAiManager.doStreamRequest(CommonConstant.AI_GENERATE_QUESTIONS_SYSTEM_MESSAGE, userMessage, null);
+        // 左括号计数器，除了默认值外，当回归为 0 时，表示左括号等于右括号，可以截取
+        AtomicInteger counter = new AtomicInteger(0);
+        // 拼接完整题目
+        StringBuilder stringBuilder = new StringBuilder();
+        // 默认全局线程池
+        Scheduler scheduler = Schedulers.io();
+        modelDataFlowable
+                .observeOn(scheduler)
+                .map(modelData -> modelData.getChoices().get(0).getDelta().getContent())
+                .map(message -> message.replaceAll("\\s", ""))
+                .filter(StrUtil::isNotBlank)
+                .flatMap(message -> {
+                    List<Character> characterList = new ArrayList<>();
+                    for (char c : message.toCharArray()) {
+                        characterList.add(c);
+                    }
+                    return Flowable.fromIterable(characterList);
+                })
+                .doOnNext(c -> {
+                    // 如果是 '{'，计数器 + 1
+                    if (c == '{') {
+                        counter.addAndGet(1);
+                    }
+                    if (counter.get() > 0) {
+                        stringBuilder.append(c);
+                    }
+                    if (c == '}') {
+                        counter.addAndGet(-1);
+                        if (counter.get() == 0) {
+                            // 可以拼接题目，并且通过 SSE 返回给前端
+                            sseEmitter.send(JSONUtil.toJsonStr(stringBuilder.toString()));
+                            // 重置，准备拼接下一道题
+                            stringBuilder.setLength(0);
+                        }
+                    }
+                })
+                .doOnError((e) -> log.error("sse error", e))
+                .doOnComplete(sseEmitter::complete)
+                .subscribe();
+        return sseEmitter;
+    }
 }
 
 
