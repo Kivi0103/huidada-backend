@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface UserAnswerService extends IService<UserAnswer> {
 
-    TestResultVO submitCustomAnswer(CommitUserChoiceRequestDTO answer, HttpServletRequest request);
+    TestResultVO submitCustomAnswer(CommitUserChoiceRequestDTO answer, HttpServletRequest request) throws Exception;
 
     QueryWrapper<UserAnswer> getQueryWrapper(UserAnswerQueryRequestDTO userAnswerQueryRequestDTO);
 

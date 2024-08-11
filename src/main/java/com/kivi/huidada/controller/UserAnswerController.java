@@ -35,7 +35,7 @@ public class UserAnswerController {
     @Resource
     private UserAnswerService userAnswerService;
     @PostMapping("/submitCustomAnswer")
-    public BaseResponse<TestResultVO> submitCustomAnswer(@RequestBody CommitUserChoiceRequestDTO answer, HttpServletRequest request) {
+    public BaseResponse<TestResultVO> submitCustomAnswer(@RequestBody CommitUserChoiceRequestDTO answer, HttpServletRequest request) throws Exception {
         log.info("Received answer: " + answer);
         TestResultVO testResultVO = userAnswerService.submitCustomAnswer(answer,request);
         return ResultUtils.success(testResultVO);
