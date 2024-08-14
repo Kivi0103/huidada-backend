@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kivi.huidada.model.vo.TestCountVO;
 import com.kivi.huidada.model.vo.TestPaperVO;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -36,4 +37,6 @@ public interface TestPaperService extends IService<TestPaper> {
     String validAndGetUserMessage(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request);
 
     SseEmitter aiGenerateQuestionSSE(AiGenerateQuestionRequestDTO aiGenerateQuestionRequestDTO, HttpServletRequest request);
+
+    List<TestCountVO> testCountTop10();
 }

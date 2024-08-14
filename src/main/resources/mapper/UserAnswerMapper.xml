@@ -23,4 +23,12 @@
         user_id,create_time,update_time,
         is_delete
     </sql>
+    <select id="userAnswerCuntByTestPaperId" resultType="com.kivi.huidada.model.vo.AppAnswerResultCountVO">
+        select result_name as resultName, count(result_name) as resultCount
+        from user_answer
+        where test_paper_id = #{testPaperId}
+        and result_name is not null
+        group by result_name
+        order by resultCount desc
+    </select>
 </mapper>

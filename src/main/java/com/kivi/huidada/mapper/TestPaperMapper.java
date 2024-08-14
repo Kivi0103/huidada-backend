@@ -2,7 +2,10 @@ package com.kivi.huidada.mapper;
 
 import com.kivi.huidada.model.entity.TestPaper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kivi.huidada.model.vo.TestCountVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * @author Kivi
@@ -12,6 +15,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 public interface TestPaperMapper extends BaseMapper<TestPaper> {
 
+    List<TestCountVO> selectCountTop10();
 }
 
 

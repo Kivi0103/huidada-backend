@@ -1,12 +1,16 @@
 package com.kivi.huidada.model.dto.user_answer;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class CommitUserChoiceRequestDTO {
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long id;
+
     /**
      * 所属试卷id
      */

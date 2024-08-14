@@ -6,10 +6,12 @@ import com.kivi.huidada.model.dto.user_answer.CommitUserChoiceRequestDTO;
 import com.kivi.huidada.model.dto.user_answer.UserAnswerQueryRequestDTO;
 import com.kivi.huidada.model.entity.UserAnswer;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kivi.huidada.model.vo.AppAnswerResultCountVO;
 import com.kivi.huidada.model.vo.TestResultVO;
 import com.kivi.huidada.model.vo.UserAnswerVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Kivi
@@ -23,4 +25,6 @@ public interface UserAnswerService extends IService<UserAnswer> {
     QueryWrapper<UserAnswer> getQueryWrapper(UserAnswerQueryRequestDTO userAnswerQueryRequestDTO);
 
     Page<UserAnswerVO> getUserAnswerVOPage(Page<UserAnswer> userAnswerPage, HttpServletRequest request);
+
+    List<AppAnswerResultCountVO> userAnswerCuntByTestPaperId(Long testPaperId);
 }

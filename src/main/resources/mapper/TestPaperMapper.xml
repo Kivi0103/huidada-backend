@@ -29,4 +29,13 @@
         scoring_strategy_type,create_time,update_time,
         is_delete, review_message, review_status
     </sql>
+    <select id="selectCountTop10" resultType="com.kivi.huidada.model.vo.TestCountVO">
+        select a.test_paper_id as id, test_name as testName, count(b.user_id) as testCount
+        from user_answer a,
+             test_paper b
+        where a.test_paper_id = b.id
+        group by test_paper_id
+        order by testCount desc
+        limit 10;
+    </select>
 </mapper>

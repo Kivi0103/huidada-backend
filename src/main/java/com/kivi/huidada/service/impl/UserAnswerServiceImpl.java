@@ -21,6 +21,7 @@ import com.kivi.huidada.model.entity.TestPaper;
 import com.kivi.huidada.model.entity.User;
 import com.kivi.huidada.model.entity.UserAnswer;
 import com.kivi.huidada.model.enums.ScoringTypeEnum;
+import com.kivi.huidada.model.vo.AppAnswerResultCountVO;
 import com.kivi.huidada.model.vo.TestPaperVO;
 import com.kivi.huidada.model.vo.TestResultVO;
 import com.kivi.huidada.model.vo.UserAnswerVO;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -62,9 +64,11 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
     private UserService userService;
     @Resource
     private ZhiPuAiManager zhiPuAiManager;
-
     @Resource
     private RedissonClient redissonClient;
+
+    @Resource
+    private UserAnswerMapper userAnswerMapper;
 
     private static final String AI_ANSWER_LOCK = "AI_ANSWER_LOCK";
 
@@ -77,18 +81,20 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         List<String> choices = answer.getChoices();
         Long testPaperId = answer.getTestPaperId();
         Integer isAI = answer.getScoringStrategyType();
+        Long id = answer.getId();
+        ThrowUtils.throwIf(id==null, ErrorCode.PARAMS_ERROR);
         // 根据试卷id取出所有测评结果;
         TestPaper testPaper = testPaperService.getById(testPaperId);
         List<QuestionItem> questionItems = JSONUtil.toList(testPaper.getQuestionContent(), QuestionItem.class);
         Integer type = answer.getType();
         User loginUser = userService.getLoginUser(request);
         if (isAI == 1) {
-            return submitAIScoringAnswer(testPaperId, choices, questionItems, loginUser);
+            return submitAIScoringAnswer(testPaperId, choices, questionItems, loginUser, id);
         } else {
             if (type.equals(0)) {
-                return submitCustomScoringAnswer(testPaperId, choices, questionItems, loginUser);
+                return submitCustomScoringAnswer(testPaperId, choices, questionItems, loginUser, id);
             } else {
-                return submitCustomTestAnswer(testPaperId, choices, questionItems, loginUser);
+                return submitCustomTestAnswer(testPaperId, choices, questionItems, loginUser, id);
             }
         }
     }
@@ -136,7 +142,12 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         return userAnswerVOPage;
     }
 
-    private TestResultVO submitAIScoringAnswer(Long testPaperId, List<String> choices, List<QuestionItem> questionItems, User loginUser) throws Exception {
+    @Override
+    public List<AppAnswerResultCountVO> userAnswerCuntByTestPaperId(Long testPaperId) {
+        return userAnswerMapper.userAnswerCuntByTestPaperId(testPaperId);
+    }
+
+    private TestResultVO submitAIScoringAnswer(Long testPaperId, List<String> choices, List<QuestionItem> questionItems, User loginUser, Long id) throws Exception {
         // 首先从缓存中获得答案
         String cacheKey = getCacheKey(testPaperId, choices);
         String aiResultJson = null;
@@ -197,6 +208,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         TestResultVO testResultVO = JSONUtil.toBean(aiResultJson, TestResultVO.class);
         // 6.保存用户答案到数据库
         UserAnswer userAnswer = new UserAnswer();
+        userAnswer.setId(id);
         userAnswer.setTestPaperId(testPaperId);
         userAnswer.setResultName(testResultVO.getResultName());
         userAnswer.setResultDesc(testResultVO.getResultDesc());
@@ -204,8 +216,13 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         userAnswer.setChoices(JSONUtil.toJsonStr(choices));
         userAnswer.setScore(testResultVO.getScore());
         userAnswer.setUserId(loginUser.getId());
-        // 保存用户答案到数据库
-        this.save(userAnswer);
+        // 写入数据库
+        try {
+            boolean result = this.save(userAnswer);
+            ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        } catch (DuplicateKeyException e) {
+            // ignore error
+        }
         testResultVO.setCreateTime(new Date(DateTimeUtils.currentTimeMillis()));
         // 7.返回前端结果
         return testResultVO;
@@ -217,7 +234,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
      * @param choices
      * @return
      */
-    public TestResultVO submitCustomScoringAnswer(Long testPaperId, List<String> choices, List<QuestionItem> questionItems, User loginUser) {
+    public TestResultVO submitCustomScoringAnswer(Long testPaperId, List<String> choices, List<QuestionItem> questionItems, User loginUser, Long id) {
         // 根据试卷id取出参考答案
         int sumScore = 0;
         int i = 0;
@@ -243,6 +260,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         ScoringResult scoringResult = scoringResults.get(k - 1);
         // 保存用户答案
         UserAnswer userAnswer = new UserAnswer();
+        userAnswer.setId(id);
         userAnswer.setTestPaperId(testPaperId);
         userAnswer.setScoringResultId(scoringResult.getId());
         userAnswer.setScoringType(ScoringTypeEnum.CUSTOM_TEST.getValue());
@@ -251,8 +269,13 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         userAnswer.setUserId(loginUser.getId());
         userAnswer.setResultName(scoringResult.getResultName());
         userAnswer.setResultDesc(scoringResult.getResultDesc());
-        // 保存用户答案到数据库
-        this.save(userAnswer);
+        // 写入数据库
+        try {
+            boolean result = this.save(userAnswer);
+            ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        } catch (DuplicateKeyException e) {
+            // ignore error
+        }
         // 封装前端返回结果
         TestResultVO testResultVO = new TestResultVO();
         testResultVO.setScore(sumScore);
@@ -270,7 +293,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
      * @param choices
      * @return
      */
-    public TestResultVO submitCustomTestAnswer(Long testPaperId, List<String> choices, List<QuestionItem> questionItems, User loginUser) {
+    public TestResultVO submitCustomTestAnswer(Long testPaperId, List<String> choices, List<QuestionItem> questionItems, User loginUser, Long id) {
         // 统计选项中各个值的数量
         Map<String, Integer> optionCountMap = new HashMap<>();
         int i = 0;
@@ -300,14 +323,20 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         }
         // 保存用户答案
         UserAnswer userAnswer = new UserAnswer();
+        userAnswer.setId(id);
         userAnswer.setTestPaperId(testPaperId);
         userAnswer.setScoringResultId(mostHitResult.getId());
         userAnswer.setScoringType(ScoringTypeEnum.CUSTOM_TEST.getValue());
         userAnswer.setChoices(JSONUtil.toJsonStr(choices));
         userAnswer.setScore(maxScore);
         userAnswer.setUserId(loginUser.getId());
-        // 保存用户答案到数据库
-        this.save(userAnswer);
+        // 写入数据库
+        try {
+            boolean result = this.save(userAnswer);
+            ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        } catch (DuplicateKeyException e) {
+            // ignore error
+        }
         // 封装前端返回结果
         TestResultVO testResultVO = new TestResultVO();
         testResultVO.setScore(maxScore);

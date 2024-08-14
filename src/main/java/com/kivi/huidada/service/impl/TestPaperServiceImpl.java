@@ -10,11 +10,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kivi.huidada.common.ErrorCode;
 import com.kivi.huidada.constant.CommonConstant;
 import com.kivi.huidada.exception.BusinessException;
-import com.kivi.huidada.exception.ThrowUtils;
 import com.kivi.huidada.manager.ZhiPuAiManager;
 import com.kivi.huidada.model.dto.test_paper.*;
 import com.kivi.huidada.model.entity.TestPaper;
 import com.kivi.huidada.model.entity.User;
+import com.kivi.huidada.model.vo.TestCountVO;
 import com.kivi.huidada.model.vo.TestPaperVO;
 import com.kivi.huidada.service.TestPaperService;
 import com.kivi.huidada.mapper.TestPaperMapper;
@@ -29,14 +29,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import scala.App;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -53,6 +50,12 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
 
     @Resource
     private ZhiPuAiManager zhiPuAiManager;
+
+    @Resource
+    private Scheduler vipScheduler;
+
+    @Resource
+    private TestPaperMapper testPaperMapper;
 
     /**
      * 获取查询条件
@@ -294,7 +297,6 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
                     if (c == '}') {
                         counter.addAndGet(-1);
                         if (counter.get() == 0) {
-                            // 可以拼接题目，并且通过 SSE 返回给前端
                             sseEmitter.send(JSONUtil.toJsonStr(stringBuilder.toString()));
                             // 重置，准备拼接下一道题
                             stringBuilder.setLength(0);
@@ -306,6 +308,13 @@ public class TestPaperServiceImpl extends ServiceImpl<TestPaperMapper, TestPaper
                 .subscribe();
         return sseEmitter;
     }
+
+    @Override
+    public List<TestCountVO> testCountTop10() {
+        List<TestCountVO> testCountVOList = testPaperMapper.selectCountTop10();
+        return testCountVOList;
+    }
+
 }
 
 
