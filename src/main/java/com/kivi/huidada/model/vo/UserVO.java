@@ -15,7 +15,7 @@ public class UserVO implements Serializable {
     /**
      * 用户id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
 
     /**

@@ -7,6 +7,6 @@ import java.io.Serializable;
 
 @Data
 public class GetScoringResultByIdRequestDTO implements Serializable {
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long testId;
 }

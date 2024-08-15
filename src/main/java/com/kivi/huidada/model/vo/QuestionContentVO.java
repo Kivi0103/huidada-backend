@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class QuestionContentVO implements Serializable {
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long testPaperId;
     private List<QuestionItem> questionContent;
     private static final long serialVersionUID = 1L;

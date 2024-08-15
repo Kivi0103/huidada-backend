@@ -16,7 +16,7 @@ public class UserAnswerQueryRequestDTO extends PageRequest implements Serializab
     /**
      * 作答人id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long userId;
 
     /**

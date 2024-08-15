@@ -11,7 +11,7 @@ public class TestPaperUpdateRequestDTO implements Serializable {
     /**
      * 试卷id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
 
     /**

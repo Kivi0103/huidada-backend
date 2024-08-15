@@ -14,7 +14,7 @@ public class TestPaperAddRequestDTO implements Serializable {
     /**
      * 测试id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
 
     /**

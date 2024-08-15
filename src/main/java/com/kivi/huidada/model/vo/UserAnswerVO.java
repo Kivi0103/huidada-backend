@@ -24,7 +24,7 @@ public class UserAnswerVO implements Serializable {
     /**
      * 用户答案id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
 
     /**
@@ -65,7 +65,7 @@ public class UserAnswerVO implements Serializable {
     /**
      * 作答人id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long userId;
 
     /**

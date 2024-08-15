@@ -21,7 +21,7 @@ public class TestPaperVO implements Serializable {
     /**
      * 试卷id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
 
     /**
@@ -47,7 +47,7 @@ public class TestPaperVO implements Serializable {
     /**
      * 试卷创建人id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long userId;
 
     /**

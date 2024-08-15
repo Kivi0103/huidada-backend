@@ -11,7 +11,7 @@ public class TestPaperQueryRequestDTO extends PageRequest implements Serializabl
     /**
      * 试卷id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
 
     /**

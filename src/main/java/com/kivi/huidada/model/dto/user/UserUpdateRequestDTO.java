@@ -10,7 +10,7 @@ public class UserUpdateRequestDTO implements Serializable {
     /**
      * 用户id
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
     /**
      * 用户名

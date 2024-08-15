@@ -14,7 +14,7 @@ public class ScoringResultItem {
     /**
      * 结果ID
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    
     private Long id;
     /**
      * 结果名称
